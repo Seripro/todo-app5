@@ -8,4 +8,4 @@ RUN npm install
 
 EXPOSE 3000
 
-CMD ["sh", "-c", "npm run dev"]
+CMD ["sh", "-c", "npx prisma contract emit && npx prisma db init && npm run dev"]
