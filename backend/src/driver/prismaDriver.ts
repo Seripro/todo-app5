@@ -24,4 +24,9 @@ export class PrismaDriver implements TodoDriver {
     });
     return updated;
   }
+
+  async deleteTodo(id: number): Promise<Todo | null> {
+    const deleted = await db.orm.public.Todo.where({ id: id }).delete();
+    return deleted;
+  }
 }
