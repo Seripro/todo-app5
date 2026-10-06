@@ -19,4 +19,9 @@ export class TodoGateway implements TodoPort {
     const todo = await this.driver.createTodo(title);
     return todo;
   }
+
+  async updateTodo(id: number, completed: boolean): Promise<Todo | null> {
+    const todo = await this.driver.updateTodo(id, completed);
+    return todo;
+  }
 }
