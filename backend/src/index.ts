@@ -1,6 +1,5 @@
 import { serve } from "@hono/node-server";
 import { Hono } from "hono";
-import { db } from "./prisma/db";
 import { cors } from "hono/cors";
 import { todoUseCase } from "./container";
 
@@ -45,8 +44,12 @@ app.patch("/api/todos/:id", async (c) => {
 app.delete("/api/todos/:id", async (c) => {
   const strId = await c.req.param("id");
   const id = Number(strId);
-  const deleted = await db.orm.public.Todo.where({ id: id }).delete();
-  return c.json({ id, message: "Delete successfully" });
+  const deleted = await todoUseCase.deleteTodo(id);
+  if (deleted) {
+    return c.json({ id: id, message: "Deleted successfully" }, 200);
+  } else {
+    return c.json({ error: "Todo not found" }, 404);
+  }
 });
 
 serve(
