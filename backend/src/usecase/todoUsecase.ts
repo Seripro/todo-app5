@@ -4,7 +4,7 @@ import type { TodoPort } from "./port/todoPort";
 export class TodoUseCase {
   constructor(private readonly todoPort: TodoPort) {}
 
-  async execute(): Promise<Todo[]> {
+  async getTodos(): Promise<Todo[]> {
     const todos = await this.todoPort.getTodos();
 
     return todos.map((todo) => ({
