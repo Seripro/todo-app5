@@ -14,4 +14,9 @@ export class TodoGateway implements TodoPort {
       createdAt: todo.createdAt,
     }));
   }
+
+  async createTodo(title: string): Promise<Todo> {
+    const todo = await this.driver.createTodo(title);
+    return todo;
+  }
 }
