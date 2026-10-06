@@ -20,7 +20,7 @@ app.get("/", (c) => {
 });
 
 app.get("/api/todos", async (c) => {
-  const todos = await todoUseCase.execute();
+  const todos = await todoUseCase.getTodos();
   return c.json(todos);
 });
 
