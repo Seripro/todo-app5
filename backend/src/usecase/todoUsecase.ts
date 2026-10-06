@@ -24,4 +24,9 @@ export class TodoUseCase {
     const todo = await this.todoPort.updateTodo(id, completed);
     return todo;
   }
+
+  async deleteTodo(id: number): Promise<Todo | null> {
+    const todo = await this.todoPort.deleteTodo(id);
+    return todo;
+  }
 }
