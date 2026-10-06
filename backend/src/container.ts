@@ -4,4 +4,4 @@ import { TodoUseCase } from "./usecase/todoUseCase";
 
 const driver = new PrismaDriver();
 const todoGateway = new TodoGateway(driver);
-export const highStatUseCase = new TodoUseCase(todoGateway);
+export const todoUseCase = new TodoUseCase(todoGateway);
