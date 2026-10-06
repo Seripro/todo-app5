@@ -26,12 +26,7 @@ app.get("/api/todos", async (c) => {
 
 app.post("/api/todos", async (c) => {
   const { title } = await c.req.json<{ title: string }>();
-  const newTodo = {
-    title: title,
-    completed: false,
-    createdAt: new Date().toISOString(),
-  };
-  const created = await db.orm.public.Todo.create(newTodo);
+  const created = await todoUseCase.createTodo(title);
   return c.json(created, 201);
 });
 
