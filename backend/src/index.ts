@@ -13,6 +13,17 @@ app.get("/api/todos", async (c) => {
   return c.json(todos);
 });
 
+app.post("/api/todos", async (c) => {
+  const { title } = await c.req.json<{ title: string }>();
+  const newTodo = {
+    title: title,
+    completed: false,
+    createdAt: new Date().toISOString(),
+  };
+  const created = await db.orm.public.Todo.create(newTodo);
+  return c.json(created, 201);
+});
+
 serve(
   {
     fetch: app.fetch,
