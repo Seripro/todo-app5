@@ -1,9 +1,9 @@
 import type { Todo } from "../domain/todo";
-import type { PrismaDriver } from "../driver/prismaDriver";
+import type { TodoDriver } from "../driver/todoDriver";
 import type { TodoPort } from "../usecase/port/todoPort";
 
 export class TodoGateway implements TodoPort {
-  constructor(private readonly driver: PrismaDriver) {}
+  constructor(private readonly driver: TodoDriver) {}
 
   async getTodos(): Promise<Todo[]> {
     const todos = await this.driver.getTodos();
