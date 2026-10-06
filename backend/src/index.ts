@@ -1,8 +1,18 @@
 import { serve } from "@hono/node-server";
 import { Hono } from "hono";
 import { db } from "./prisma/db";
+import { cors } from "hono/cors";
 
 const app = new Hono();
+
+app.use(
+  "/*",
+  cors({
+    origin: "http://localhost:5173",
+    allowMethods: ["GET", "POST", "DELETE", "OPTIONS", "PATCH"],
+    allowHeaders: ["Content-Type"],
+  }),
+);
 
 app.get("/", (c) => {
   return c.text("Hello Hono!");
