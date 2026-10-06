@@ -34,10 +34,12 @@ app.patch("/api/todos/:id", async (c) => {
   const strId = await c.req.param("id");
   const id = Number(strId);
   const { completed } = await c.req.json();
-  const updated = await db.orm.public.Todo.where({ id: id }).update({
-    completed: completed,
-  });
-  return c.json({ id: id, message: "Updated successfully" }, 200);
+  const updated = await todoUseCase.updateTodo(id, completed);
+  if (updated) {
+    return c.json({ id: id, message: "Updated successfully" }, 200);
+  } else {
+    return c.json({ error: "Todo not found" }, 404);
+  }
 });
 
 app.delete("/api/todos/:id", async (c) => {
