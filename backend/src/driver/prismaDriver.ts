@@ -7,4 +7,14 @@ export class PrismaDriver implements TodoDriver {
     const todos = await db.orm.public.Todo.all();
     return todos;
   }
+
+  async createTodo(title: string): Promise<Todo> {
+    const newTodo = {
+      title: title,
+      completed: false,
+      createdAt: new Date().toISOString(),
+    };
+    const created = await db.orm.public.Todo.create(newTodo);
+    return created;
+  }
 }
