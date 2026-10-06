@@ -14,4 +14,9 @@ export class TodoUseCase {
       createdAt: todo.createdAt,
     }));
   }
+
+  async createTodo(title: string): Promise<Todo> {
+    const todo = await this.todoPort.createTodo(title);
+    return todo;
+  }
 }
