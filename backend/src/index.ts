@@ -34,6 +34,16 @@ app.post("/api/todos", async (c) => {
   return c.json(created, 201);
 });
 
+app.patch("/api/todos/:id", async (c) => {
+  const strId = await c.req.param("id");
+  const id = Number(strId);
+  const { completed } = await c.req.json();
+  const updated = await db.orm.public.Todo.where({ id: id }).update({
+    completed: completed,
+  });
+  return c.json({ id: id, message: "Updated successfully" }, 200);
+});
+
 serve(
   {
     fetch: app.fetch,
