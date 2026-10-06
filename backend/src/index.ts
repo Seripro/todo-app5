@@ -48,7 +48,6 @@ app.delete("/api/todos/:id", async (c) => {
   const strId = await c.req.param("id");
   const id = Number(strId);
   const deleted = await db.orm.public.Todo.where({ id: id }).delete();
-  console.log(deleted);
   return c.json({ id, message: "Delete successfully" });
 });
 
