@@ -24,4 +24,9 @@ export class TodoGateway implements TodoPort {
     const todo = await this.driver.updateTodo(id, completed);
     return todo;
   }
+
+  async deleteTodo(id: number): Promise<Todo | null> {
+    const todo = await this.driver.deleteTodo(id);
+    return todo;
+  }
 }
