@@ -2,6 +2,7 @@ import { serve } from "@hono/node-server";
 import { Hono } from "hono";
 import { db } from "./prisma/db";
 import { cors } from "hono/cors";
+import { todoUseCase } from "./container";
 
 const app = new Hono();
 
@@ -19,7 +20,7 @@ app.get("/", (c) => {
 });
 
 app.get("/api/todos", async (c) => {
-  const todos = await db.orm.public.Todo.all();
+  const todos = await todoUseCase.execute();
   return c.json(todos);
 });
 
