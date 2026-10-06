@@ -4,4 +4,5 @@ export interface TodoDriver {
   getTodos(): Promise<Todo[]>;
   createTodo(title: string): Promise<Todo>;
   updateTodo(id: number, completed: boolean): Promise<Todo | null>;
+  deleteTodo(id: number): Promise<Todo | null>;
 }
