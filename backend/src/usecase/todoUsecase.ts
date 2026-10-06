@@ -19,4 +19,9 @@ export class TodoUseCase {
     const todo = await this.todoPort.createTodo(title);
     return todo;
   }
+
+  async updateTodo(id: number, completed: boolean): Promise<Todo | null> {
+    const todo = await this.todoPort.updateTodo(id, completed);
+    return todo;
+  }
 }
