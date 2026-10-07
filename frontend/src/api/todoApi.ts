@@ -1,10 +1,10 @@
 const BASE_URL = "http://localhost:3000/api/todos";
 
-export const getTodos = async () => {
+export const getTodos = () => {
   return fetch(BASE_URL);
 };
 
-export const createTodo = async (title: string) => {
+export const createTodo = (title: string) => {
   const promise = fetch(BASE_URL, {
     method: "POST",
     headers: {
