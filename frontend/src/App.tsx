@@ -49,6 +49,7 @@ function App() {
       const newTodos: Todo[] = [...todos, newTodo];
       setTodos(newTodos);
       setTitle("");
+      setError("");
     }
   };
 
