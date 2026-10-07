@@ -14,3 +14,10 @@ export const createTodo = (title: string) => {
   });
   return promise;
 };
+
+export const updateTodo = (id: number) => {
+  const promise = fetch(`${BASE_URL}/${id}`, {
+    method: "DELETE",
+  });
+  return promise;
+};

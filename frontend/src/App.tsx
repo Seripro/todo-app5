@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import "./App.css";
 import type { Todo } from "./domain/todo";
-import { createTodo, getTodos } from "./api/todoApi";
+import { createTodo, getTodos, updateTodo } from "./api/todoApi";
 
 const BASE_URL = "http://localhost:3000/api/todos";
 
@@ -51,9 +51,7 @@ function App() {
 
   const handleDelete = async (id: number) => {
     try {
-      const rawRes = await fetch(`${BASE_URL}/${id}`, {
-        method: "DELETE",
-      });
+      const rawRes = await updateTodo(id);
       const res = await rawRes.json();
       if (res.error) {
         setError(res.error);
