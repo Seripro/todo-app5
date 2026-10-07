@@ -25,3 +25,10 @@ export const updateTodo = (id: number, completed: boolean) => {
   });
   return promise;
 };
+
+export const deleteTodo = (id: number) => {
+  const promise = fetch(`${BASE_URL}/${id}`, {
+    method: "DELETE",
+  });
+  return promise;
+};
