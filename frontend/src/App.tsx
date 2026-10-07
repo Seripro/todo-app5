@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import "./App.css";
 import type { Todo } from "./domain/todo";
+import { getTodos } from "./api/todoApi";
 
 const BASE_URL = "http://localhost:3000/api/todos";
 
@@ -13,7 +14,7 @@ function App() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const rawRes = await fetch(BASE_URL);
+        const rawRes = await getTodos();
         const res = await rawRes.json();
         if (res.error) {
           setError(res.error);
