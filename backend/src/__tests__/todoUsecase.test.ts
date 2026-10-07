@@ -88,3 +88,24 @@ describe("updateTodo", () => {
     expect(updated).toBeNull();
   });
 });
+describe("deleteTodo", () => {
+  test("削除したtodoが返ってくる", async () => {
+    const id = 1;
+    const mockDataForDelete = {
+      id: id,
+      title: "読書",
+      completed: false,
+      createdAt: "2026-10-05",
+    };
+    const useCase = new TodoUseCase(mockPort);
+    const deleted = await useCase.deleteTodo(id);
+    expect(deleted).toStrictEqual(mockDataForDelete);
+  });
+  test("削除するデータがない場合、nullが返ってくる", async () => {
+    const id = 1;
+    const deleteTodo = vi.fn().mockResolvedValue(null);
+    const useCase = new TodoUseCase({ ...mockPort, deleteTodo });
+    const deleted = await useCase.deleteTodo(id);
+    expect(deleted).toBeNull();
+  });
+});
