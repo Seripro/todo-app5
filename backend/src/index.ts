@@ -19,36 +19,55 @@ app.get("/", (c) => {
 });
 
 app.get("/api/todos", async (c) => {
-  const todos = await todoUseCase.getTodos();
-  return c.json(todos);
+  try {
+    const todos = await todoUseCase.getTodos();
+    return c.json(todos);
+  } catch {
+    return c.json({ error: "Failed to fetch todos" }, 500);
+  }
 });
 
 app.post("/api/todos", async (c) => {
-  const { title } = await c.req.json<{ title: string }>();
-  const created = await todoUseCase.createTodo(title);
-  return c.json(created, 201);
+  try {
+    const { title } = await c.req.json<{ title: string }>();
+    if (!title || !title.trim()) {
+      return c.json({ error: "Title is required" }, 400);
+    }
+    const created = await todoUseCase.createTodo(title);
+    return c.json(created, 201);
+  } catch {
+    return c.json({ error: "Failed to add todo" }, 500);
+  }
 });
 
 app.patch("/api/todos/:id", async (c) => {
-  const strId = await c.req.param("id");
-  const id = Number(strId);
-  const { completed } = await c.req.json();
-  const updated = await todoUseCase.updateTodo(id, completed);
-  if (updated) {
-    return c.json({ id: id, message: "Updated successfully" }, 200);
-  } else {
-    return c.json({ error: "Todo not found" }, 404);
+  try {
+    const strId = await c.req.param("id");
+    const id = Number(strId);
+    const { completed } = await c.req.json();
+    const updated = await todoUseCase.updateTodo(id, completed);
+    if (updated) {
+      return c.json({ id: id, message: "Updated successfully" }, 200);
+    } else {
+      return c.json({ error: "Todo not found" }, 404);
+    }
+  } catch {
+    return c.json({ error: "Failed to update todo" }, 500);
   }
 });
 
 app.delete("/api/todos/:id", async (c) => {
-  const strId = await c.req.param("id");
-  const id = Number(strId);
-  const deleted = await todoUseCase.deleteTodo(id);
-  if (deleted) {
-    return c.json({ id: id, message: "Deleted successfully" }, 200);
-  } else {
-    return c.json({ error: "Todo not found" }, 404);
+  try {
+    const strId = await c.req.param("id");
+    const id = Number(strId);
+    const deleted = await todoUseCase.deleteTodo(id);
+    if (deleted) {
+      return c.json({ id: id, message: "Deleted successfully" }, 200);
+    } else {
+      return c.json({ error: "Todo not found" }, 404);
+    }
+  } catch {
+    return c.json({ error: "Failed to delete todo" }, 500);
   }
 });
 
