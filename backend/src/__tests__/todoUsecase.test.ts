@@ -48,3 +48,17 @@ describe("getTodos", () => {
     expect(todos).toEqual(mockDataForGet);
   });
 });
+describe("createTodo", () => {
+  test("作成したtodoが返ってくる", async () => {
+    const title = "勉強";
+    const mockDataForCreate = {
+      id: 3,
+      title: title,
+      completed: false,
+      createdAt: new Date().toISOString(),
+    };
+    const useCase = new TodoUseCase(mockPort);
+    const created = await useCase.createTodo(title);
+    expect(created).toEqual(mockDataForCreate);
+  });
+});
