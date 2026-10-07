@@ -14,6 +14,7 @@ function App() {
   const [title, setTitle] = useState("");
   const [todos, setTodos] = useState<Todo[]>([]);
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -27,6 +28,8 @@ function App() {
         }
       } catch {
         setError("Todoの取得に失敗しました");
+      } finally {
+        setLoading(false);
       }
     };
     fetchData();
@@ -84,6 +87,8 @@ function App() {
       setTodos(newTodos);
     }
   };
+
+  if (loading) return <p>Loading...</p>;
 
   return (
     <>
