@@ -1,12 +1,6 @@
 import { useEffect, useState } from "react";
 import "./App.css";
-
-type Todo = {
-  id: number;
-  title: string;
-  completed: boolean;
-  createdAt: string;
-};
+import type { Todo } from "./domain/todo";
 
 const BASE_URL = "http://localhost:3000/api/todos";
 
@@ -14,6 +8,7 @@ function App() {
   const [title, setTitle] = useState("");
   const [todos, setTodos] = useState<Todo[]>([]);
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -27,63 +22,80 @@ function App() {
         }
       } catch {
         setError("Todoの取得に失敗しました");
+      } finally {
+        setLoading(false);
       }
     };
     fetchData();
   }, []);
 
   const handleAdd = async () => {
-    const rawRes = await fetch(BASE_URL, {
-      method: "POST",
-      body: JSON.stringify({ title: title }),
-    });
-    const res = await rawRes.json();
-    if (res.error) {
-      setError(res.error);
-      return;
-    } else {
-      const newTodo: Todo = res;
-      const newTodos: Todo[] = [...todos, newTodo];
-      setTodos(newTodos);
-      setTitle("");
+    try {
+      const rawRes = await fetch(BASE_URL, {
+        method: "POST",
+        body: JSON.stringify({ title: title }),
+      });
+      const res = await rawRes.json();
+      if (res.error) {
+        setError(res.error);
+        return;
+      } else {
+        const newTodo: Todo = res;
+        const newTodos: Todo[] = [...todos, newTodo];
+        setTodos(newTodos);
+        setTitle("");
+        setError("");
+      }
+    } catch {
+      setError("Todo登録に失敗しました");
     }
   };
 
   const handleDelete = async (id: number) => {
-    const rawRes = await fetch(`${BASE_URL}/${id}`, {
-      method: "DELETE",
-    });
-    const res = await rawRes.json();
-    if (res.error) {
-      setError(res.error);
-      return;
-    } else {
-      const newTodos = todos.filter((todo) => todo.id !== id);
-      setTodos(newTodos);
+    try {
+      const rawRes = await fetch(`${BASE_URL}/${id}`, {
+        method: "DELETE",
+      });
+      const res = await rawRes.json();
+      if (res.error) {
+        setError(res.error);
+        return;
+      } else {
+        const newTodos = todos.filter((todo) => todo.id !== id);
+        setTodos(newTodos);
+      }
+    } catch {
+      setError("Todo削除に失敗しました");
     }
   };
 
   const handleToggle = async (id: number, completed: boolean) => {
-    const rawRes = await fetch(`${BASE_URL}/${id}`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ completed: !completed }),
-    });
-    const res = await rawRes.json();
-    if (res.error) {
-      setError(res.error);
-    } else {
-      const newTodos: Todo[] = todos.map((todo) => ({
-        id: todo.id,
-        title: todo.title,
-        completed: todo.id === id ? !todo.completed : todo.completed,
-        createdAt: todo.createdAt,
-      }));
-      setTodos(newTodos);
+    try {
+      const rawRes = await fetch(`${BASE_URL}/${id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ completed: !completed }),
+      });
+      const res = await rawRes.json();
+      if (res.error) {
+        setError(res.error);
+      } else {
+        const newTodos: Todo[] = todos.map((todo) => ({
+          id: todo.id,
+          title: todo.title,
+          completed: todo.id === id ? !todo.completed : todo.completed,
+          createdAt: todo.createdAt,
+        }));
+        setTodos(newTodos);
+      }
+    } catch {
+      setError("Todo更新に失敗しました");
     }
   };
+
+  if (loading) return <p>Loading...</p>;
 
   return (
     <>
