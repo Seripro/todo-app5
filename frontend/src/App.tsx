@@ -17,12 +17,16 @@ function App() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const rawRes = await fetch(BASE_URL);
-      const res = await rawRes.json();
-      if (res.error) {
-        setError(res.error);
-      } else {
-        setTodos(res);
+      try {
+        const rawRes = await fetch(BASE_URL);
+        const res = await rawRes.json();
+        if (res.error) {
+          setError(res.error);
+        } else {
+          setTodos(res);
+        }
+      } catch {
+        setError("Todoの取得に失敗しました");
       }
     };
     fetchData();
