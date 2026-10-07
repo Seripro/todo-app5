@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 import "./App.css";
 import type { Todo } from "./domain/todo";
-
-const BASE_URL = "http://localhost:3000/api/todos";
+import { createTodo, deleteTodo, getTodos, updateTodo } from "./api/todoApi";
 
 function App() {
   const [title, setTitle] = useState("");
@@ -13,7 +12,7 @@ function App() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const rawRes = await fetch(BASE_URL);
+        const rawRes = await getTodos();
         const res = await rawRes.json();
         if (res.error) {
           setError(res.error);
@@ -31,10 +30,7 @@ function App() {
 
   const handleAdd = async () => {
     try {
-      const rawRes = await fetch(BASE_URL, {
-        method: "POST",
-        body: JSON.stringify({ title: title }),
-      });
+      const rawRes = await createTodo(title);
       const res = await rawRes.json();
       if (res.error) {
         setError(res.error);
@@ -53,9 +49,7 @@ function App() {
 
   const handleDelete = async (id: number) => {
     try {
-      const rawRes = await fetch(`${BASE_URL}/${id}`, {
-        method: "DELETE",
-      });
+      const rawRes = await deleteTodo(id);
       const res = await rawRes.json();
       if (res.error) {
         setError(res.error);
@@ -71,13 +65,7 @@ function App() {
 
   const handleToggle = async (id: number, completed: boolean) => {
     try {
-      const rawRes = await fetch(`${BASE_URL}/${id}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ completed: !completed }),
-      });
+      const rawRes = await updateTodo(id, !completed);
       const res = await rawRes.json();
       if (res.error) {
         setError(res.error);
