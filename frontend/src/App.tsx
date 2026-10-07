@@ -1,12 +1,6 @@
 import { useEffect, useState } from "react";
 import "./App.css";
-
-type Todo = {
-  id: number;
-  title: string;
-  completed: boolean;
-  createdAt: string;
-};
+import type { Todo } from "./domain/todo";
 
 const BASE_URL = "http://localhost:3000/api/todos";
 
