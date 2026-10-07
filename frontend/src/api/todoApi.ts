@@ -15,9 +15,13 @@ export const createTodo = (title: string) => {
   return promise;
 };
 
-export const updateTodo = (id: number) => {
+export const updateTodo = (id: number, completed: boolean) => {
   const promise = fetch(`${BASE_URL}/${id}`, {
-    method: "DELETE",
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ completed: completed }),
   });
   return promise;
 };
