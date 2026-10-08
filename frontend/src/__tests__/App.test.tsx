@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, test, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import App from "../App";
-import { createTodo, getTodos, updateTodo } from "../api/todoApi";
+import { createTodo, deleteTodo, getTodos, updateTodo } from "../api/todoApi";
 
 vi.mock("../api/todoApi.ts", () => ({
   getTodos: vi.fn().mockResolvedValue({
@@ -43,11 +43,13 @@ vi.mock("../api/todoApi.ts", () => ({
   ),
   deleteTodo: vi.fn((id: number) =>
     Promise.resolve({
-      id: id,
-      title: "読書",
-      completed: false,
-      createdAt: "2026-10-05",
-    }),
+      json: async () => ({
+        id: id,
+        title: "読書",
+        completed: false,
+        createdAt: "2026-10-05",
+      }),
+    } as Response),
   ),
 }));
 
@@ -157,6 +159,29 @@ describe("Todoの更新", () => {
     )) as HTMLInputElement[];
     await user.click(checkbox[0]);
     const error = await screen.findByText("Failed to update todo");
+    expect(error).toBeDefined();
+  });
+});
+describe("Todoの削除", () => {
+  test("Todoの削除に成功する", async () => {
+    render(<App />);
+    const user = userEvent.setup();
+    const buttons = await screen.findAllByRole("button", { name: "削除" });
+    await user.click(buttons[0]);
+    expect(deleteTodo).toHaveBeenCalledWith(1);
+
+    const error = await screen.queryByTestId("error");
+    expect(error).toBeNull();
+  });
+  test("Todoの削除に失敗する", async () => {
+    vi.mocked(deleteTodo).mockResolvedValue({
+      json: async () => ({ error: "Failed to delete todo" }),
+    } as Response);
+    render(<App />);
+    const user = userEvent.setup();
+    const buttons = await screen.findAllByRole("button", { name: "削除" });
+    await user.click(buttons[0]);
+    const error = await screen.queryByTestId("error");
     expect(error).toBeDefined();
   });
 });
