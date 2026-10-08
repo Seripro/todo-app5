@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, test, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import App from "../App";
-import { createTodo, getTodos } from "../api/todoApi";
+import { createTodo, getTodos, updateTodo } from "../api/todoApi";
 
 vi.mock("../api/todoApi.ts", () => ({
   getTodos: vi.fn().mockResolvedValue({
@@ -33,11 +33,13 @@ vi.mock("../api/todoApi.ts", () => ({
   ),
   updateTodo: vi.fn((id: number, completed: boolean) =>
     Promise.resolve({
-      id: id,
-      title: "掃除",
-      completed: completed,
-      createdAt: "2026-10-05",
-    }),
+      json: async () => ({
+        id,
+        title: "掃除",
+        completed,
+        createdAt: "2026-10-05",
+      }),
+    } as Response),
   ),
   deleteTodo: vi.fn((id: number) =>
     Promise.resolve({
@@ -51,6 +53,22 @@ vi.mock("../api/todoApi.ts", () => ({
 
 beforeEach(() => {
   vi.clearAllMocks();
+  vi.mocked(getTodos).mockResolvedValue({
+    json: async () => [
+      {
+        id: 1,
+        title: "勉強",
+        completed: false,
+        createdAt: "2026-10-05",
+      },
+      {
+        id: 2,
+        title: "洗濯",
+        completed: false,
+        createdAt: "2026-10-05",
+      },
+    ],
+  } as Response);
 });
 
 describe("App.tsxのテスト", () => {
@@ -110,5 +128,35 @@ describe("Todoの登録", () => {
 
     const dbError = await screen.queryByText("Failed to add todo");
     expect(dbError).toBeDefined();
+  });
+});
+describe("Todoの更新", () => {
+  test("Todoの更新に成功する", async () => {
+    render(<App />);
+    const user = userEvent.setup();
+    const checkbox = (await screen.findAllByRole(
+      "checkbox",
+    )) as HTMLInputElement[];
+    await user.click(checkbox[0]);
+    expect(updateTodo).toHaveBeenCalledWith(1, true);
+    const checkboxAfterClick = (await screen.findAllByRole(
+      "checkbox",
+    )) as HTMLInputElement[];
+    expect(checkboxAfterClick[0].checked).toBe(true);
+  });
+  test("Todoの更新に失敗する", async () => {
+    vi.mocked(updateTodo).mockResolvedValue({
+      json: async () => ({
+        error: "Failed to update todo",
+      }),
+    } as Response);
+    render(<App />);
+    const user = userEvent.setup();
+    const checkbox = (await screen.findAllByRole(
+      "checkbox",
+    )) as HTMLInputElement[];
+    await user.click(checkbox[0]);
+    const error = await screen.findByText("Failed to update todo");
+    expect(error).toBeDefined();
   });
 });
