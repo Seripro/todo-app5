@@ -1,7 +1,8 @@
 import { beforeEach, describe, expect, test, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import App from "../App";
-import { getTodos } from "../api/todoApi";
+import { createTodo, getTodos } from "../api/todoApi";
 
 vi.mock("../api/todoApi.ts", () => ({
   getTodos: vi.fn().mockResolvedValue({
@@ -22,11 +23,13 @@ vi.mock("../api/todoApi.ts", () => ({
   } as Response),
   createTodo: vi.fn((title: string) =>
     Promise.resolve({
-      id: 3,
-      title: title,
-      completed: false,
-      createdAt: "2026-10-05",
-    }),
+      json: async () => ({
+        id: 3,
+        title,
+        completed: false,
+        createdAt: "2026-10-05",
+      }),
+    } as Response),
   ),
   updateTodo: vi.fn((id: number, completed: boolean) =>
     Promise.resolve({
@@ -75,5 +78,37 @@ describe("Todoの取得", () => {
     render(<App />);
     const error = await screen.findByText("Failed to fetch todos");
     expect(error).toBeDefined();
+  });
+});
+describe("Todoの登録", () => {
+  test("Todoの登録が成功する", async () => {
+    render(<App />);
+    const user = userEvent.setup();
+    const input = await screen.findByPlaceholderText("タイトル");
+    await user.type(input, "宿題");
+    const button = await screen.findByText("追加");
+    await user.click(button);
+
+    screen.debug();
+    const titleError = await screen.queryByText("Title is required");
+    const dbError = await screen.queryByText("Failed to add todo");
+    expect(createTodo).toHaveBeenCalledWith("宿題");
+    expect(titleError).toBeNull();
+    expect(dbError).toBeNull();
+  });
+  test("Todoの登録に失敗する", async () => {
+    vi.mocked(createTodo).mockResolvedValue({
+      json: async () => ({ error: "Failed to add todo" }),
+    } as Response);
+    render(<App />);
+
+    const user = userEvent.setup();
+    const input = await screen.findByPlaceholderText("タイトル");
+    await user.type(input, "宿題");
+    const button = await screen.findByText("追加");
+    await user.click(button);
+
+    const dbError = await screen.queryByText("Failed to add todo");
+    expect(dbError).toBeDefined();
   });
 });
