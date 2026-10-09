@@ -9,3 +9,7 @@ build:
 lint:
   cd frontend && npm run lint
   cd backend && npm run lint
+
+format:
+  cd frontend && npm run format
+  cd backend && npm run format
