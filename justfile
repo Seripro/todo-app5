@@ -13,3 +13,6 @@ lint:
 format:
   cd frontend && npm run format
   cd backend && npm run format
+
+dev:
+  docker compose up
