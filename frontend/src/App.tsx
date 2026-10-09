@@ -29,21 +29,25 @@ function App() {
   }, []);
 
   const handleAdd = async () => {
-    try {
-      const rawRes = await createTodo(title);
-      const res = await rawRes.json();
-      if (res.error) {
-        setError(res.error);
-        return;
-      } else {
-        const newTodo: Todo = res;
-        const newTodos: Todo[] = [...todos, newTodo];
-        setTodos(newTodos);
-        setTitle("");
-        setError("");
+    if (!title || !title.trim()) {
+      setError("タイトルを入力してください");
+    } else {
+      try {
+        const rawRes = await createTodo(title);
+        const res = await rawRes.json();
+        if (res.error) {
+          setError(res.error);
+          return;
+        } else {
+          const newTodo: Todo = res;
+          const newTodos: Todo[] = [...todos, newTodo];
+          setTodos(newTodos);
+          setTitle("");
+          setError("");
+        }
+      } catch {
+        setError("Todo登録に失敗しました");
       }
-    } catch {
-      setError("Todo登録に失敗しました");
     }
   };
 

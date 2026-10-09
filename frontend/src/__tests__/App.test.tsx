@@ -131,6 +131,18 @@ describe("Todoの登録", () => {
     const dbError = await screen.queryByText("Failed to add todo");
     expect(dbError).toBeDefined();
   });
+  test("タイトルが空の場合、エラーメッセージが表示される", async () => {
+    render(<App />);
+
+    const user = userEvent.setup();
+    const input = await screen.findByPlaceholderText("タイトル");
+    await user.type(input, "宿題");
+    const button = await screen.findByText("追加");
+    await user.click(button);
+
+    const dbError = await screen.queryByText("タイトルを入力してください");
+    expect(dbError).toBeDefined();
+  });
 });
 describe("Todoの更新", () => {
   test("Todoの更新に成功する", async () => {
