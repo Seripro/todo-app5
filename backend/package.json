@@ -7,8 +7,10 @@
     "start": "node dist/index.js",
     "contract:emit": "prisma contract emit",
     "test": "vitest",
+    "test:run": "vitest run",
     "lint": "eslint ./src",
-    "lint:fix": "eslint ./src --fix"
+    "lint:fix": "eslint ./src --fix",
+    "format": "npx prettier --write src"
   },
   "dependencies": {
     "@hono/node-server": "^2.1.3",
