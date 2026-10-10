@@ -1,11 +1,11 @@
-const BASE_URL = "http://localhost:3000/api/todos";
+const API_URL = import.meta.env.VITE_API_URL;
 
 export const getTodos = () => {
-  return fetch(BASE_URL);
+  return fetch(`${API_URL}/api/todos`);
 };
 
 export const createTodo = (title: string) => {
-  const promise = fetch(BASE_URL, {
+  const promise = fetch(`${API_URL}/api/todos`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -16,7 +16,7 @@ export const createTodo = (title: string) => {
 };
 
 export const updateTodo = (id: number, completed: boolean) => {
-  const promise = fetch(`${BASE_URL}/${id}`, {
+  const promise = fetch(`${API_URL}/api/todos/${id}`, {
     method: "PATCH",
     headers: {
       "Content-Type": "application/json",
@@ -27,7 +27,7 @@ export const updateTodo = (id: number, completed: boolean) => {
 };
 
 export const deleteTodo = (id: number) => {
-  const promise = fetch(`${BASE_URL}/${id}`, {
+  const promise = fetch(`${API_URL}/api/todos/${id}`, {
     method: "DELETE",
   });
   return promise;
