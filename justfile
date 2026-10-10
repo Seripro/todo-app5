@@ -19,3 +19,6 @@ dev:
 
 down:
   docker compose down -v
+
+docker-build:
+  docker compose build
