@@ -9,7 +9,7 @@ import {
 export const todosTable = pgTable("todos", {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
   title: varchar({ length: 255 }).notNull(),
-  completed: boolean().default(false),
+  completed: boolean().default(false).notNull(),
   createdAt: timestamp().defaultNow().notNull(),
   updatedAt: timestamp(),
 });
