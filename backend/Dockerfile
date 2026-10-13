@@ -8,4 +8,4 @@ RUN npm install
 
 EXPOSE 3000
 
-CMD ["sh", "-c", "npx drizzle-kit migrate && npm run dev"]
+CMD ["sh", "-c", "npx drizzle-kit migrate && npx tsx ./src/drizzle/seed.ts && npm run dev"]
