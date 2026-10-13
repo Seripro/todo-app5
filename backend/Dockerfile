@@ -8,4 +8,4 @@ RUN npm install
 
 EXPOSE 3000
 
-CMD ["sh", "-c", "npx prisma contract emit && npx prisma db init && npx tsx src/prisma/seed.ts && npm run dev"]
+CMD ["sh", "-c", "npx drizzle-kit migrate && npx tsx ./src/drizzle/seed.ts && npm run dev"]
