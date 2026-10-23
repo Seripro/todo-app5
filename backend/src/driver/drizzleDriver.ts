@@ -40,11 +40,14 @@ export class DrizzleDriver implements TodoDriver {
       })
       .where(eq(todosTable.id, id))
       .returning();
+
+    const todo = updated[0];
+    if (!todo) return null;
     return {
-      id: updated[0].id,
-      title: updated[0].title,
-      completed: updated[0].completed,
-      createdAt: updated[0].createdAt.toISOString(),
+      id: todo.id,
+      title: todo.title,
+      completed: todo.completed,
+      createdAt: todo.createdAt.toISOString(),
     };
   }
 
@@ -53,11 +56,14 @@ export class DrizzleDriver implements TodoDriver {
       .delete(todosTable)
       .where(eq(todosTable.id, id))
       .returning();
+
+    const todo = deleted[0];
+    if (!todo) return null;
     return {
-      id: deleted[0].id,
-      title: deleted[0].title,
-      completed: deleted[0].completed,
-      createdAt: deleted[0].createdAt.toISOString(),
+      id: todo.id,
+      title: todo.title,
+      completed: todo.completed,
+      createdAt: todo.createdAt.toISOString(),
     };
   }
 }
