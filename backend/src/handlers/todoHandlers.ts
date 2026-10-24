@@ -17,7 +17,7 @@ export const createTodoHandlers = (todoUseCase: TodoUseCase) => {
         if (!title || !title.trim()) {
           return c.json({ error: "Title is required" }, 400);
         }
-        const created = await todoUseCase.createTodo(title);
+        const created = await todoUseCase.createTodo(title.trim());
         return c.json(created, 201);
       } catch {
         return c.json({ error: "Failed to add todo" }, 500);
