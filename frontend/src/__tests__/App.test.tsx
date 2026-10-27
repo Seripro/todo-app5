@@ -135,13 +135,11 @@ describe("Todoの登録", () => {
     render(<App />);
 
     const user = userEvent.setup();
-    const input = await screen.findByPlaceholderText("タイトル");
-    await user.type(input, "宿題");
     const button = await screen.findByText("追加");
     await user.click(button);
 
     const dbError = await screen.queryByText("タイトルを入力してください");
-    expect(dbError).toBeDefined();
+    expect(dbError).not.toBeNull();
   });
 });
 describe("Todoの更新", () => {
