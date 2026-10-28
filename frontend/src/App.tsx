@@ -99,7 +99,7 @@ function App() {
         />
         <button onClick={handleAdd}>追加</button>
       </div>
-      {error ? <p test-id="error">{error}</p> : null}
+      {error ? <p data-testid="error">{error}</p> : null}
       <div>
         {todos.map((todo) => {
           return (
