@@ -13,11 +13,11 @@
     "format": "npx prettier --write src"
   },
   "dependencies": {
-    "@hono/node-server": "^2.1.4",
+    "@hono/node-server": "^2.1.5",
     "@prisma/orm-postgres": "8.0.0-rc.14",
     "dotenv": "^18.0.7",
     "drizzle-orm": "^1.0.0-rc.4",
-    "hono": "^4.13.13",
+    "hono": "^4.13.14",
     "pg": "^8.23.1",
     "vitest": "^5.0.3"
   },
