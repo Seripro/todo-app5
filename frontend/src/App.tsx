@@ -14,8 +14,8 @@ function App() {
       try {
         const rawRes = await getTodos();
         const res = await rawRes.json();
-        if (res.error) {
-          setError(res.error);
+        if (!rawRes.ok) {
+          setError(res.error?.message ?? "Todoの取得に失敗しました");
         } else {
           setTodos(res);
         }
@@ -35,8 +35,8 @@ function App() {
       try {
         const rawRes = await createTodo(title);
         const res = await rawRes.json();
-        if (res.error) {
-          setError(res.error);
+        if (!rawRes.ok) {
+          setError(res.error?.message ?? "Todo登録に失敗しました");
           return;
         } else {
           const newTodo: Todo = res;
@@ -54,14 +54,13 @@ function App() {
   const handleDelete = async (id: number) => {
     try {
       const rawRes = await deleteTodo(id);
-      const res = await rawRes.json();
-      if (res.error) {
-        setError(res.error);
+      if (!rawRes.ok) {
+        const res = await rawRes.json();
+        setError(res.error?.message ?? "Todo削除に失敗しました");
         return;
-      } else {
-        const newTodos = todos.filter((todo) => todo.id !== id);
-        setTodos(newTodos);
       }
+      const newTodos = todos.filter((todo) => todo.id !== id);
+      setTodos(newTodos);
     } catch {
       setError("Todo削除に失敗しました");
     }
@@ -71,8 +70,8 @@ function App() {
     try {
       const rawRes = await updateTodo(id, !completed);
       const res = await rawRes.json();
-      if (res.error) {
-        setError(res.error);
+      if (!rawRes.ok) {
+        setError(res.error?.message ?? "Todo更新に失敗しました");
       } else {
         const newTodos: Todo[] = todos.map((todo) => ({
           id: todo.id,
