@@ -6,6 +6,7 @@ import { createTodo, deleteTodo, getTodos, updateTodo } from "../api/todoApi";
 
 vi.mock("../api/todoApi.ts", () => ({
   getTodos: vi.fn().mockResolvedValue({
+    ok: true,
     json: async () => [
       {
         id: 1,
@@ -23,6 +24,7 @@ vi.mock("../api/todoApi.ts", () => ({
   } as Response),
   createTodo: vi.fn((title: string) =>
     Promise.resolve({
+      ok: true,
       json: async () => ({
         id: 3,
         title,
@@ -33,6 +35,7 @@ vi.mock("../api/todoApi.ts", () => ({
   ),
   updateTodo: vi.fn((id: number, completed: boolean) =>
     Promise.resolve({
+      ok: true,
       json: async () => ({
         id,
         title: "掃除",
@@ -43,6 +46,7 @@ vi.mock("../api/todoApi.ts", () => ({
   ),
   deleteTodo: vi.fn((id: number) =>
     Promise.resolve({
+      ok: true,
       json: async () => ({
         id: id,
         title: "読書",
@@ -56,6 +60,7 @@ vi.mock("../api/todoApi.ts", () => ({
 beforeEach(() => {
   vi.clearAllMocks();
   vi.mocked(getTodos).mockResolvedValue({
+    ok: true,
     json: async () => [
       {
         id: 1,
@@ -91,8 +96,9 @@ describe("Todoの取得", () => {
   test("Todoの取得に失敗する", async () => {
     // ここのテストケースだけgetTodosのモックを書き換える
     vi.mocked(getTodos).mockResolvedValue({
+      ok: false,
       json: async () => ({
-        error: "Failed to fetch todos",
+        error: { message: "Failed to fetch todos" },
       }),
     } as Response);
     render(<App />);
@@ -118,7 +124,8 @@ describe("Todoの登録", () => {
   });
   test("Todoの登録に失敗する", async () => {
     vi.mocked(createTodo).mockResolvedValue({
-      json: async () => ({ error: "Failed to add todo" }),
+      ok: false,
+      json: async () => ({ error: { message: "Failed to add todo" } }),
     } as Response);
     render(<App />);
 
@@ -158,8 +165,9 @@ describe("Todoの更新", () => {
   });
   test("Todoの更新に失敗する", async () => {
     vi.mocked(updateTodo).mockResolvedValue({
+      ok: false,
       json: async () => ({
-        error: "Failed to update todo",
+        error: { message: "Failed to update todo" },
       }),
     } as Response);
     render(<App />);
@@ -185,7 +193,8 @@ describe("Todoの削除", () => {
   });
   test("Todoの削除に失敗する", async () => {
     vi.mocked(deleteTodo).mockResolvedValue({
-      json: async () => ({ error: "Failed to delete todo" }),
+      ok: false,
+      json: async () => ({ error: { message: "Failed to delete todo" } }),
     } as Response);
     render(<App />);
     const user = userEvent.setup();
