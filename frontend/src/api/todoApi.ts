@@ -1,34 +1,53 @@
+import type { Todo } from "../domain/todo";
+
 const API_URL = import.meta.env.VITE_API_URL;
+const BASE_URL = `${API_URL}/api/todos`;
+
+async function request<T>(
+  input: RequestInfo | URL,
+  init?: RequestInit,
+): Promise<T> {
+  const response = await fetch(input, init);
+
+  if (response.status === 204) {
+    return undefined as T;
+  }
+
+  const body = await response.json();
+
+  if (!response.ok) {
+    throw new Error(body?.error?.message ?? "API request failed");
+  }
+
+  return body as T;
+}
 
 export const getTodos = () => {
-  return fetch(`${API_URL}/api/todos`);
+  return request<Todo[]>(BASE_URL);
 };
 
 export const createTodo = (title: string) => {
-  const promise = fetch(`${API_URL}/api/todos`, {
+  return request<Todo>(BASE_URL, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({ title: title }),
   });
-  return promise;
 };
 
 export const updateTodo = (id: number, completed: boolean) => {
-  const promise = fetch(`${API_URL}/api/todos/${id}`, {
+  return request<Todo>(`${BASE_URL}/${id}`, {
     method: "PATCH",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({ completed: completed }),
   });
-  return promise;
 };
 
 export const deleteTodo = (id: number) => {
-  const promise = fetch(`${API_URL}/api/todos/${id}`, {
+  return request<void>(`${BASE_URL}/${id}`, {
     method: "DELETE",
   });
-  return promise;
 };
