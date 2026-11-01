@@ -12,15 +12,12 @@ function App() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const rawRes = await getTodos();
-        const res = await rawRes.json();
-        if (!rawRes.ok) {
-          setError(res.error?.message ?? "Todoの取得に失敗しました");
-        } else {
-          setTodos(res);
-        }
-      } catch {
-        setError("Todoの取得に失敗しました");
+        const todos = await getTodos();
+        setTodos(todos);
+      } catch (error) {
+        setError(
+          error instanceof Error ? error.message : "Todoの取得に失敗しました",
+        );
       } finally {
         setLoading(false);
       }
@@ -33,56 +30,46 @@ function App() {
       setError("タイトルを入力してください");
     } else {
       try {
-        const rawRes = await createTodo(title);
-        const res = await rawRes.json();
-        if (!rawRes.ok) {
-          setError(res.error?.message ?? "Todo登録に失敗しました");
-          return;
-        } else {
-          const newTodo: Todo = res;
-          const newTodos: Todo[] = [...todos, newTodo];
-          setTodos(newTodos);
-          setTitle("");
-          setError("");
-        }
-      } catch {
-        setError("Todo登録に失敗しました");
+        const todo = await createTodo(title);
+        const newTodos: Todo[] = [...todos, todo];
+        setTodos(newTodos);
+        setTitle("");
+        setError("");
+      } catch (error) {
+        setError(
+          error instanceof Error ? error.message : "Todoの登録に失敗しました",
+        );
       }
     }
   };
 
   const handleDelete = async (id: number) => {
     try {
-      const rawRes = await deleteTodo(id);
-      if (!rawRes.ok) {
-        const res = await rawRes.json();
-        setError(res.error?.message ?? "Todo削除に失敗しました");
-        return;
-      }
+      await deleteTodo(id);
       const newTodos = todos.filter((todo) => todo.id !== id);
       setTodos(newTodos);
-    } catch {
-      setError("Todo削除に失敗しました");
+    } catch (error) {
+      setError(
+        error instanceof Error ? error.message : "Todoの削除に失敗しました",
+      );
     }
   };
 
   const handleToggle = async (id: number, completed: boolean) => {
     try {
-      const rawRes = await updateTodo(id, !completed);
-      const res = await rawRes.json();
-      if (!rawRes.ok) {
-        setError(res.error?.message ?? "Todo更新に失敗しました");
-      } else {
-        const newTodos: Todo[] = todos.map((todo) => ({
-          id: todo.id,
-          title: todo.title,
-          completed: todo.id === id ? !todo.completed : todo.completed,
-          createdAt: todo.createdAt,
-        }));
-        setTodos(newTodos);
-      }
-    } catch {
-      setError("Todo更新に失敗しました");
+      const updatedTodo = await updateTodo(id, !completed);
+      const newTodos: Todo[] = todos.map((todo) => ({
+        id: todo.id,
+        title: todo.title,
+        completed:
+          todo.id === updatedTodo.id ? !todo.completed : todo.completed,
+        createdAt: todo.createdAt,
+      }));
+      setTodos(newTodos);
+    } catch (error) {
+      setError(
+        error instanceof Error ? error.message : "Todoの更新に失敗しました",
+      );
     }
   };
 
