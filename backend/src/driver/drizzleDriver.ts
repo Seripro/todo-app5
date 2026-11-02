@@ -2,11 +2,14 @@ import type { Todo } from "../domain/todo";
 import { db } from "../drizzle/client";
 import { todosTable } from "../drizzle/schema";
 import type { TodoDriver } from "./todoDriver";
-import { eq } from "drizzle-orm";
+import { asc, eq } from "drizzle-orm";
 
 export class DrizzleDriver implements TodoDriver {
   async getTodos(): Promise<Todo[]> {
-    const drizzleTodos = await db.select().from(todosTable);
+    const drizzleTodos = await db
+      .select()
+      .from(todosTable)
+      .orderBy(asc(todosTable.createdAt));
     const todos = drizzleTodos.map((todo) => ({
       id: todo.id,
       title: todo.title,
